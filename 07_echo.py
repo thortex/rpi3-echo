@@ -35,7 +35,7 @@ def jtalk(msg):
         status = omxplay("fate2.mp3")
     elif msg.find("残念") > -1:
         status = omxplay("fate1.mp3")
-    elif msg.find("チャイム"):
+    elif msg.find("チャイム") > -1:
         status = omxplay("school-chime1.mp3")
     elif msg.find("助けて") > -1 or msg.find("ヘルプ") > -1:
         status = omxplay("morsecode-sos1.mp3")
