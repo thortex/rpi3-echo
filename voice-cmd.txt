@@ -1,38 +1,77 @@
- ("不正解") or ("間違い") or ("ブッブー") 
- ("正解") or ("ピンポン") 
- ("印刷") or ("プリント") 
- ("時間") or ("何時") or ("なんじ") or ("汝") 
- ("何日") or ("何曜日") or ("日付") or ("曜日") 
- ("問題") 
- ("運命") 
- ("残念") 
- ("チャイム") 
- ("助けて") or ("ヘルプ") 
- ("おはよう") 
- ("こんにちは") or ("今日") 
- ("再起動") or ("リブート") 
- ("シャットダウン") or ("さようなら") 
- ("起きて") or ("アラーム") 
- ("エンジン") or ("ブンブン") 
- ("救急車") or ("怪我") 
- ("緊急事態") or ("異常事態") 
- ("ミサイル") or ("発射") 
- ("はじめ") or ("スタート") 
- ("終わり") or ("おわり") 
- ("爆破") or ("爆発") 
- ("パトカー") or ("警察") 
- ("キーボード") or ("パソコン") 
- ("拍手") or ("素晴らしい") 
- ("切る") or ("やられた") 
- ("トランペット") or ("ファンファーレ") 
- ("どんどん") or ("パフパフ") or ("ドンドン") 
- ("規制") or ("禁則") 
- ("決定") or ("決めた") or ("決めました") 
- ("開始") 
- ("終了") 
- ("ホイミ") or ("ベホイミ") or ("ベホイム") or ("ベホイマ") or ("ベホマ") 
- ("ベホマラー") or ("ベホマズン") 
- ("ザオ") or ("ザオラル") or ("ザオリク") 
- ("メラ") or ("メラミ") or ("メラゾーマ") 
- ("ヒャド") or ("ヒャダルコ") or ("ヒャダイン") or ("マヒャド") 
- ("ギラ") or ("ペギラマ") 
+{"間違い", "snd""incorrect1.mp3"},
+{"正解", "snd""correct1.mp3"},
+{"ピンポン", "snd""correct1.mp3"},
+{"印刷", "snd""printer-print1.mp3", "say""印刷します。"},
+{"プリント", "snd""printer-print1.mp3", "say""印刷します。"},
+{"時間", "cmd""./04_say_now.sh"},
+{"何時", "cmd""./04_say_now.sh"},
+{"なんじ", "cmd""./04_say_now.sh"},
+{"汝", "cmd""./04_say_now.sh"},
+{"何日", "cmd""./04_say_date.sh"},
+{"何曜日", "cmd""./04_say_date.sh"},
+{"日付", "cmd""./04_say_date.sh"},
+{"曜日", "cmd""./04_say_date.sh"},
+{"問題", "snd""question1.mp3"},
+{"運命", "snd""fate2.mp3"},
+{"残念", "snd""fate1.mp3"},
+{"チャイム", "snd""school-chime1.mp3"},
+{"助けて", "snd""morsecode-sos1.mp3"},
+{"ヘルプ", "snd""morsecode-sos1.mp3"},
+{"おはよう", "say""おはようございます。"},
+{"こんにちは", "say""こんにちは"},
+{"今日", "say""こんにちは"},
+{"再起動", "say""再起動します。", "cmd""./cmds/reboot.sh"},
+{"リブート", "say""再起動します。", "cmd""./cmds/reboot.sh"},
+{"シャットダウン", "say""シャットダウします。", "cmd""./cmds/shutdown.sh"},
+{"さようなら", "say""シャットダウします。", "cmd""./cmds/shutdown.sh"},
+{"起きて", "snd""alerm1.mp3"},
+{"アラーム", "snd""alerm1.mp3"},
+{"ぶんぶん", "snd""f1-engine1.mp3"},
+{"ブンブン", "snd""f1-engine1.mp3"},
+{"救急車", "snd""ambulance-siren1.mp3"},
+{"怪我", "snd""ambulance-siren1.mp3"},
+{"緊急事態", "snd""base-siren1.mp3"},
+{"異常事態", "snd""base-siren1.mp3"},
+{"ミサイル", "snd""missile1.mp3"},
+{"発射", "snd""missile1.mp3"},
+{"はじめ", "snd""gong-played1.mp3"},
+{"スタート", "snd""gong-played1.mp3"},
+{"終わり", "snd""gong-played2.mp3"},
+{"爆破", "snd""bomb1.mp3"},
+{"爆発", "snd""bomb1.mp3"},
+{"パトカー", "snd""patrol-car1.mp3"},
+{"パトロールカー", "snd""patrol-car1.mp3"},
+{"警察", "snd""patrol-car1.mp3"},
+{"ピーポ", "snd""patrol-car1.mp3"},
+{"キーボード", "snd""keyboard-high-speed1.mp3"},
+{"パソコン", "snd""keyboard-high-speed1.mp3"},
+{"拍手", "snd""clapping-hands1.mp3"},
+{"素晴らしい", "snd""clapping-hands1.mp3"},
+{"すばらしい", "snd""clapping-hands1.mp3"},
+{"切る", "snd""katana-slash5.mp3"},
+{"やられた", "snd""katana-slash5.mp3"},
+{"トランペット", "snd""trumpet1.mp3"},
+{"ファンファーレ", "snd""trumpet1.mp3"},
+{"どんどん", "snd""dondonpafupafu1.mp3"},
+{"パフパフ", "snd""dondonpafupafu1.mp3"},
+{"ドンドン", "snd""dondonpafupafu1.mp3"},
+{"禁則", "snd""self-regulation1.mp3"},
+{"決定", "snd""decision8.mp3"},
+{"決めた", "snd""decision8.mp3"},
+{"決めました", "snd""decision8.mp3"},
+{"開始", "snd""broadcasting-start1.mp3"},
+{"終了", "snd""broadcasting-end1.mp3"},
+{"寒い", "snd""gust1.mp3"},
+{"電車", "snd""train-bell1.mp3"},
+{"機関車", "snd""locomotive-whistle1.mp3"},
+{"船", "snd""ship-big-whistle1.mp3"},
+{"エンジン", "snd""car-engine1.mp3"},
+{"ライオン", "snd""lion1.mp3"},
+{"象", "snd""elephant1.mp3"},
+{"犬", "snd""dog2.mp3"},
+{"猫", "snd""cat-cry3.mp3"},
+{"消防車", "snd""fireengine_starting.mp3"},
+{"ニュース", "func"read_news},
+{"暑い", "cmd""./cmds/cputemp.sh"},
+{"暑くない", "cmd""./cmds/cputemp.sh"},
+# {"", ""},
