@@ -1,11 +1,11 @@
--d julius-kits/dictation-kit-v4.4/model/lang_m/bccwj.60k.bingram
--v julius-kits/dictation-kit-v4.4/model/lang_m/bccwj.60k.htkdic 
--h julius-kits/dictation-kit-v4.4/model/phone_m/jnas-tri-3k16-gid.binhmm
--hlist julius-kits/dictation-kit-v4.4/model/phone_m/logicalTri-3k16-gid.bin
+-d /dev/shm/julius/bccwj.60k.bingram
+-v /dev/shm/julius/bccwj.60k.htkdic 
+-h /dev/shm/julius/jnas-tri-3k16-gid.binhmm
+-hlist /dev/shm/julius/logicalTri-3k16-gid.bin
 -n 2
 -output 1
 -input mic
--rejectshort 300
+-rejectshort 200
 -48
 -realtime
 -module
