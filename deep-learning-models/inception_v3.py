@@ -15,7 +15,6 @@ from __future__ import absolute_import
 
 import warnings
 import numpy as np
-print("Importing keras...")
 from keras.models import Model
 from keras import layers
 from keras.layers import Activation
@@ -35,11 +34,8 @@ from keras.applications.imagenet_utils import decode_predictions
 from keras.applications.imagenet_utils import _obtain_input_shape
 from keras.preprocessing import image
 
-print("Imported.")
-
 WEIGHTS_PATH = 'https://github.com/fchollet/deep-learning-models/releases/download/v0.5/inception_v3_weights_tf_dim_ordering_tf_kernels.h5'
 WEIGHTS_PATH_NO_TOP = 'https://github.com/fchollet/deep-learning-models/releases/download/v0.5/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5'
-
 
 def conv2d_bn(x,
               filters,
@@ -400,6 +396,22 @@ def preprocess_input(x):
     x -= 0.5
     x *= 2.
     return x
+
+def predict(img_path):
+    print("Loading image...")
+    img = image.load_img(img_path, target_size=(299, 299))
+    img = image.img_to_array(img)
+    img = np.expand_dims(img, axis=0)
+    print("Preprocessing...")
+    img = preprocess_input(img)
+    print("Predicting...")
+    preds = model.predict(img)
+    print('Predicted:', )
+    decoded_preds = decode_predictions(preds)
+    for pred in decoded_preds[0]:
+        print(pred)
+
+    return decoded_preds[0][0][1]
 
 
 if __name__ == '__main__':
