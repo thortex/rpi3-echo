@@ -2,11 +2,6 @@
 # 
 # https://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/
 
-x=`dpkg -l wolfram-engine| grep ^ii`
-if [ "x$x" != "x" ] ; then
-   sudo apt-get purge wolfram-engine;
-fi
-
 sudo apt-get install \
      build-essential \
      ccache \

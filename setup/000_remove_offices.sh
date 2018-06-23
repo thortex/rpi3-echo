@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh -x
 
 sudo apt-get remove nuscratch \
      scratch \
@@ -32,8 +32,6 @@ sudo apt-get remove nuscratch \
      python-minecraftpi \
      python-picraft \
      python3-minecraftpi \
-     python3-picraft 
+     python3-picraft \
+     wolfram-engine
 
-sudo apt-get update
-sudo apt-get upgrade -y 
-sudo apt-get dist-upgrade -y
