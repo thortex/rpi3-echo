@@ -2,7 +2,6 @@
 # 
 # https://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/
 
-
 x=`dpkg -l wolfram-engine| grep ^ii`
 if [ "x$x" != "x" ] ; then
    sudo apt-get purge wolfram-engine;
@@ -10,14 +9,19 @@ fi
 
 sudo apt-get install \
      build-essential \
+     ccache \
      cmake \
      pkg-config \
      libpng-dev \
+     libpng++-dev \
      libjpeg-dev \
      libtiff5-dev \
      libjasper-dev \
      libavcodec-dev \
      libavformat-dev \
+     libavresample-dev \
+     libswresample-dev \
+     libavutil-dev \
      libswscale-dev \
      libv4l-dev \
      libxvidcore-dev \
@@ -28,45 +32,56 @@ sudo apt-get install \
      libcairo2-dev \
      libfontconfig1-dev \
      libatlas-base-dev \
+     liblapack-dev \
+     liblapacke-dev \
+     libblas-dev \
+     libopenblas-dev \
      gfortran \
      python-pip \
-     python2.7-dev \
-     python3-dev \
      python3-pip \
      python-numpy \
      python3-numpy \
-     ccache \
+     python-dev \
+     python3-dev \
      libeigen2-dev \
      libeigen3-dev \
      libopenexr-dev \
      libgstreamer1.0-dev \
      libgstreamermm-1.0-dev \
-     liblapack-dev \
-     libprotobuf-dev
+     libgoogle-glog-dev \
+     libgflags-dev \
+     libprotobuf-c-dev \
+     libprotobuf-dev \
+     protobuf-c-compiler \
+     protobuf-compiler \
+     libgphoto2-dev \
+     qt5-default \
+     libvtk6-dev \
+     libvtk6-qt-dev \
+     libhdf5-dev \
+     freeglut3-dev \
+     libgtkglext1-dev \
+     libgtkglextmm-x11-1.2-dev \
+     libwebp-dev \
+     libtbb-dev \
+     libdc1394-22-dev \
+     libunicap2-dev \
+     ffmpeg \
+     libtesseract-dev \
+     tesseract-ocr \
+     tesseract-ocr-eng \
+     tesseract-ocr-jpn \
+     libleptonica-dev
 
 # https://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/
 # https://qiita.com/PonDad/items/c5419c164b4f2efee368
-# TODO:
-# libavresample -dev
-# libgphoto2 -dev
-# OpenBLAS -dev
-# vtk -dev
-# protobuf not found
-# protobuf
-# glog
-# gflags
-# tiny-dnn
-# HDF5
-# gtkglext
-# lapack
-# libwebp
 
-wget -c -O opencv.zip https://github.com/opencv/opencv/archive/3.4.1.zip
-wget -c -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.1.zip
-
+V=3.4.1
+wget -c -O opencv.zip https://github.com/opencv/opencv/archive/${V}.zip
+wget -c -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/${V}.zip
 unzip opencv.zip
 unzip opencv_contrib.zip
-cd opencv-3.4.1
+cd opencv-${V}
 mkdir -p build
 cd build
 
@@ -74,14 +89,23 @@ export CXXFLAGS='-mtune=cortex-a53 -march=armv8-a+crc -mcpu=cortex-a53 -mfpu=cry
 
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D CMAKE_INSTALL_PREFIX=/usr/local \
-      -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-3.4.1/modules \
+      -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-${V}/modules \
+      -D BUILD_WITH_DEBUG_INFO=ON \
+      -D BUILD_SHARED_LIBS=ON \
+      -D BUILD_CUDA_STUBS=ON \
+      -D BUILD_DOCS=OFF \
       -D BUILD_ZLIB=OFF \
       -D BUILD_TIFF=OFF \
+      -D BUILD_JPEG=OFF \
       -D BUILD_JASPER=OFF \
       -D BUILD_PNG=OFF \
       -D BUILD_OPENEXR=OFF \
-      -D BUILD_SHARED_LIBS=ON \
-      -D BUILD_CUDA_STUBS=ON \
+      -D BUILD_PERF_TESTS=OFF \
+      -D BUILD_TBB=OFF \
+      -D BUILD_WEBP=OFF \
+      -D BUILD_TESTS=OFF \
+      -D BUILD_EXAMPLES=OFF \
+      -D BUILD_JAVA=OFF \
       -D WITH_EIGEN=ON \
       -D WITH_GSTREAMER=ON \
       -D WITH_GTK=ON \
@@ -91,12 +115,107 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D WITH_PNG=ON \
       -D WITH_TIFF=ON \
       -D WITH_V4L=ON \
+      -D WITH_LIBV4L=ON \
+      -D WITH_VTK=ON \
       -D WITH_LAPACK=ON \
+      -D WITH_LAPACKE=ON \
       -D WITH_PROTOBUF=ON \
+      -D WITH_1394=ON \
+      -D WITH_EIGEN=ON \
+      -D WITH_FFMPEG=ON \
+      -D WITH_GPHOTO2=ON \
+      -D WITH_OPENGL=OFF \
+      -D WITH_QT=ON \
+      -D WITH_TBB=ON \
+      -D WITH_WEBP=ON \
+      -D WITH_UNICAP=ON \
+      -D WITH_OPENNI=OFF \
+      -D WITH_GDAL=OFF \
+      -D WITH_CUBLAS=OFF \
+      -D WITH_NVCUVID=OFF \
+      -D WITH_CUDA=OFF \
+      -D WITH_CUFFT=OFF \
+      -D WITH_IPP=OFF \
+      -D WITH_IPP_A=OFF \
+      -D WITH_OPENMP=OFF \
+      -D WITH_PTHREADS_PF=OFF \
+      -D WITH_PVAPI=OFF \
+      -D WITH_MATLAB=OFF \
+      -D WITH_XIMEA=OFF \
+      -D WITH_XINE=OFF \
+      -D WITH_OPENCL=OFF \
+      -D WITH_OPENCLAMDBLAS=OFF \
+      -D WITH_OPENCLAMDFFT=OFF \
+      -D WITH_OPENCL_SVM=OFF \
       -D INSTALL_PYTHON_EXAMPLES=ON \
+      -D ENABLE_CXX11=ON \
       -D ENABLE_CCACHE=ON \
+      -D ENABLE_FAST_MATH=ON \
       -D ENABLE_NEON=ON \
       -D ENABLE_VFPV3=ON \
-      .. && make && sudo checkinstall && sudo ldconfig
+      -D ENABLE_PROFILING=OFF \
+      -D ENABLE_COVERAGE=OFF \
+      -D ENABLE_OMIT_FRAME_POINTER=ON \
+      -D BUILD_opencv_apps=ON \
+      -D BUILD_opencv_aruco=ON \
+      -D BUILD_opencv_bgsegm=ON \
+      -D BUILD_opencv_calib3d=ON \
+      -D BUILD_opencv_bioinspired=ON \
+      -D BUILD_opencv_dnn=ON \
+      -D BUILD_opencv_dpm=ON \
+      -D BUILD_opencv_core=ON \
+      -D BUILD_opencv_face=ON \
+      -D BUILD_opencv_features2d=ON \
+      -D BUILD_opencv_flann=ON \
+      -D BUILD_opencv_freetype=ON \
+      -D BUILD_opencv_fuzzy=ON \
+      -D BUILD_opencv_hfs=ON \
+      -D BUILD_opencv_highgui=ON \
+      -D BUILD_opencv_imgcodecs=ON \
+      -D BUILD_opencv_imgproc=ON \
+      -D BUILD_opencv_ml=ON \
+      -D BUILD_opencv_objdetect=ON \
+      -D BUILD_opencv_optflow=ON \
+      -D BUILD_opencv_phase_unwrapping=ON \
+      -D BUILD_opencv_photo=ON \
+      -D BUILD_opencv_plot=ON \
+      -D BUILD_opencv_python2=ON \
+      -D BUILD_opencv_python3=ON \
+      -D BUILD_opencv_reg=ON \
+      -D BUILD_opencv_rgbd=ON \
+      -D BUILD_opencv_saliency=ON \
+      -D BUILD_opencv_shape=ON \
+      -D BUILD_opencv_stereo=ON \
+      -D BUILD_opencv_stitching=ON \
+      -D BUILD_opencv_superres=ON \
+      -D BUILD_opencv_surface_matching=ON \
+      -D BUILD_opencv_text=ON \
+      -D BUILD_opencv_tracking=ON \
+      -D BUILD_opencv_ts=ON \
+      -D BUILD_opencv_video=ON \
+      -D BUILD_opencv_videoio=ON \
+      -D BUILD_opencv_videostab=ON \
+      -D BUILD_opencv_viz=OFF \
+      -D BUILD_opencv_world=OFF \
+      -D BUILD_opencv_xfeature2d=ON \
+      -D BUILD_opencv_ximgproc=ON \
+      -D BUILD_opencv_xobjdetect=ON \
+      -D BUILD_opencv_xphoto=ON \
+      -D BUILD_opencv_java=OFF \
+      -D BUILD_opencv_cudaarithm=OFF \
+      -D BUILD_opencv_cudabgsegm=OFF \
+      -D BUILD_opencv_cudacodec=OFF \
+      -D BUILD_opencv_cudafeatures2d=OFF \
+      -D BUILD_opencv_cudafilters=OFF \
+      -D BUILD_opencv_cudaimgproc=OFF \
+      -D BUILD_opencv_cudalegacy=OFF \
+      -D BUILD_opencv_cudaobjdetect=OFF \
+      -D BUILD_opencv_cudaoptflow=OFF \
+      -D BUILD_opencv_cudastereo=OFF \
+      -D BUILD_opencv_cudawarping=OFF \
+      -D BUILD_opencv_cudev=OFF \
+      -D Tesseract_INCLUDE_DIR=/usr/include/tesseract \
+      -D Tesseract_LIBRARY=/usr/lib/arm-linux-gnueabihf/libtesseract.so.3 \
+      .. && make && sudo checkinstall
 
-sudo dpkg -i opencv_20??????-1_armhf.deb
+
