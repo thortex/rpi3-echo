@@ -14,7 +14,7 @@ port = 10500
 known_news = []
 news_topics = []
 
-def omxplay(filename):
+def mp3play(filename):
     d = 'mp3/anime/'
     status = subprocess.call("mpg321 -q " + d + filename, shell=True)
 
@@ -157,7 +157,7 @@ def jtalk(msg):
                 call_jtalk(row["say"])
             # play sound
             if "snd" in row and row["snd"] != "":
-                status = omxplay(row["snd"])
+                status = mp3play(row["snd"])
             # execute command
             if "cmd" in row and row["cmd"] != "":
                 status = subprocess.call(row["cmd"] + " " + msg, shell=True)

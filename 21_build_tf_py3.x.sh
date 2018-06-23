@@ -19,10 +19,7 @@ sudo apt-get install \
      python3-h5py \
      gfortran
 
-cd tensorflow
-
-# TODO 
-grep -Rl 'lib64' | xargs sed -i 's/lib64/lib/g'
+cd tensorflow-$V && grep -Rl 'lib64' | xargs sed -i 's/lib64/lib/g'
 
 (PYTHON_BIN_PATH=/usr/bin/python3 \
  PYTHON_LIB_PATH=/usr/local/lib/python3.5/dist-packages \
