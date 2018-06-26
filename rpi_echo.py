@@ -1,18 +1,73 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from cv2 import CAP_PROP_FRAME_WIDTH, \
+    CAP_PROP_FRAME_HEIGHT, \
+    CAP_PROP_FPS, \
+    VideoCapture, \
+    imwrite
+import json
+import httplib
+import numpy as np
 import random
+from os import remove
 import socket
 import string
 import subprocess
+import sys
 import time
-import httplib
-
-host = 'localhost'
-port = 10500
 
 known_news = []
 news_topics = []
+
+print("Importing keras...")
+from keras.applications.mobilenetv2 import MobileNetV2
+from keras.applications.mobilenetv2 import preprocess_input
+from keras.applications.mobilenetv2 import decode_predictions
+from keras.preprocessing import image
+print("Imported.")
+
+def load_mobilenet(shape):
+    print("Loading model...")
+    model = MobileNetV2(input_shape=shape, weights='imagenet')
+    print("Created MobileNet V2 model.")
+    return model
+
+def load_japanese_labels(filename):
+    if sys.version_info >= (3, 0):
+        with open(filename, 'r', encoding="utf-8") as f:
+            objs = json.load(f)
+    else:
+        import codecs
+        with codecs.open(filename, 'r', 'utf-8') as f:
+            objs = json.load(f)
+        
+    return objs
+
+def en2ja_label(objs, en_wnid, acc):
+    ja_label = u""
+    for obj in objs:
+        if obj['num'] == en_wnid:
+            print(obj['en'] + " is [" + obj['ja'] + "]")
+            ja_label = obj['ja']
+            break
+                
+    if acc > 0.7:
+        prefix = u"これは、"
+        postfix = u"です。"
+    elif acc > 0.4:
+        prefix = u"これは、多分、" 
+        postfix = u"だと思います。"
+    elif acc > 0.05:
+        prefix = u"これは、もしかしたら、"
+        postfix = u"かもしれません。"
+    else:
+        prefix = u"すみません、"
+        ja_label = u""
+        postfix = u"わかりません。"
+        
+    result = prefix + ja_label + postfix
+    return result
 
 def mp3play(filename):
     d = 'mp3/anime/'
@@ -35,7 +90,7 @@ def pickup_news(con, uri_path):
                 news_topics.append(topic)
                 print("%s:%s" % (uri_path, topic))
                 
-def read_news(msg):
+def read_news(msg, cam, model, ja_labels):
     try:
         if len(news_topics) == 0:
             con = httplib.HTTPSConnection("news.yahoo.co.jp", timeout=10)
@@ -66,9 +121,43 @@ def read_news(msg):
         print(e.args)
         pass
 
+def save_captured_image(img_path, cam):
+    remove(img_path)
+    ret, frame = cam.read()
+    imwrite(img_path, frame)
     
-def jtalk(msg):
+def predict_object(msg, cam, model, ja_labels):
+    img_shape = (224, 224)
+    img_path = "/tmp/cap.jpg"
+
+    save_captured_image(img_path, cam)
+    
+    img = image.load_img(img_path, target_size=img_shape)
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    x = preprocess_input(x)
+    # predict
+    preds = model.predict(x)
+    # decode
+    results = decode_predictions(preds, top=1)[0]
+
+    for r in results:
+        print('Predicted:', r)
+        en_wnid = r[0]
+        acc = r[2]
+        # translate english label to japanese one.
+        ja_label = en2ja_label(ja_labels, en_wnid, acc)
+        print(ja_label)
+
+    if ja_label != "":
+        call_jtalk(ja_label)
+    
+    
+def execute_command(msg, cam, model, ja_labels):
     command_table = [
+        {"msg":"これは", "func":predict_object},
+        {"msg":"何ですか", "func":predict_object},
+        {"msg":"なんですか", "func":predict_object},
         {"msg":"間違い", "snd":"incorrect1.mp3"},
         {"msg":"正解", "snd":"correct1.mp3"},
         {"msg":"ピンポン", "snd":"correct1.mp3"},
@@ -147,6 +236,8 @@ def jtalk(msg):
         # {"msg":"", ""},
     ]
 
+    ret, frame = cam.read()
+    
     found = False
     for row in command_table:
         if msg.find(row["msg"]) > -1:
@@ -161,7 +252,7 @@ def jtalk(msg):
             if "cmd" in row and row["cmd"] != "":
                 status = subprocess.call(row["cmd"] + " " + msg, shell=True)
             if "func" in row and row["func"] != "":
-                row["func"](msg)
+                row["func"](msg, cam, model, ja_labels)
             break
 
     if not found:
@@ -169,9 +260,12 @@ def jtalk(msg):
 
 
 def connect_julius():
+    host = 'localhost'
+    port = 10500
+    retry_cnt = 40
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     i = 0
-    while i < 40:
+    while i < retry_cnt:
         try:
             sock.connect((host, port))
             return sock
@@ -180,33 +274,57 @@ def connect_julius():
 
         time.sleep(1)
         i += 1
-    
+
+def receive_voice(sock, cam):
+    data = ""
+    while(string.find(data, "\n.") == -1):
+        data = data + sock.recv(1024)
+        ret, frame = cam.read()
+        
+    strTemp = ""
+    for line in data.split('\n'):
+        index = line.find('WORD="')
+        if index != -1:
+            line = line[index+6:line.find('"',index+6)]
+            strTemp = strTemp + line
+
+    if strTemp != "": 
+        print("Voice: [" + strTemp + "]")
+    else:
+        print(".")
+
+    return strTemp
+        
 def main():
+    # 画像サイズ
+    img_shape = (224, 224, 3)
+    # 日本語辞書の読み込み
+    ja_labels = load_japanese_labels('src/imagenet_class_index_ja.json')
+    # カメラの初期化
+    cam = VideoCapture(0)
+    # モデルの読み込み
+    model = load_mobilenet(img_shape)
+
+    width = cam.get(CAP_PROP_FRAME_WIDTH)
+    height = cam.get(CAP_PROP_FRAME_HEIGHT)
+    fps = cam.get(CAP_PROP_FPS)
+    print("Image Capture FPS: %d" % (fps))
+    print('Image Capture Size: width=%d height=%d' % (width, height))
+    
+    # Julisu へ接続
     sock = connect_julius()
     
+    # Hello, Raspberry Pi!
     call_jtalk("おはようございます。")
-    
-    data = ""
     try:
         while True:
-            while(string.find(data, "\n.") == -1):
-                data = data + sock.recv(1024)
-
-            strTemp = ""
-            for line in data.split('\n'):
-                # print(line)
-                index = line.find('WORD="')
-                if index != -1:
-                    line = line[index+6:line.find('"',index+6)]
-                    strTemp = strTemp + line
-
-            if strTemp != "": 
-                print("Result: [" + strTemp + "]")
-                jtalk(strTemp)
-            else:
-                print(".")
-            data = ""
+            data = receive_voice(sock, cam)
+            if data != "":
+                execute_command(data, cam, model, ja_labels)
     except KeyboardInterrupt:
-        print("Exit")
-
-main()
+        print("Bye.")
+    
+    cam.release()
+        
+if __name__ == '__main__':
+    main()

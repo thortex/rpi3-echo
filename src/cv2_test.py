@@ -11,22 +11,9 @@ print("OpenCV Version: %s" % (cv2.__version__))
 
 print("Importing tensorfow...")
 import tensorflow as tf
-#import tensorflow.logging
-#import logging
-#log = logging.getLogger('tensorflow')
-#log.setLevel(logging.DEBUG)
-#formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-#fh = logging.FileHandler('tensorflow.log')
-#fh.setLevel(logging.DEBUG)
-#fh.setFormatter(formatter)
-#log.addHandler(fh)
-#config = tf.ConfigProto()
-#session = tf.Session(config=config)
 print("TensorFlow Version: %s" % (tf.__version__))
 
 print("Importing keras...")
-from keras.backend.tensorflow_backend import set_session
-#set_session(session)
 import keras
 print("Keras Version: %s" % (keras.__version__))
 if False:

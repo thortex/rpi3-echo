@@ -1,8 +1,0 @@
-build --action_env=PATH
-build --action_env=LD_LIBRARY_PATH
-build --action_env=TMPDIR
-build --test_env=PATH
-build --test_env=LD_LIBRARY_PATH
-startup --batch_cpu_scheduling --io_nice_level 7
-build --jobs 4 --ram_utilization_factor 50
-test --jobs 4

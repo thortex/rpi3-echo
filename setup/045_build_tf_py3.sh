@@ -2,22 +2,15 @@
 # refer to https://karaage.hatenadiary.jp/entry/2017/08/09/073000
 # refer to http://uepon.hatenadiary.com/entry/2018/02/12/113432
 
-V=v1.9.0-rc1
+V=v1.8.0
+
 wget -c https://github.com/tensorflow/tensorflow/archive/${V}.tar.gz
 tar xzvf ${V}.tar.gz
 
 sudo apt-get install \
-     libeigen2-dev \
-     libeigen3-dev \
-     libblas-dev \
-     liblapack-dev \
-     libatlas-base-dev \
-     python3-dev \
-     python3-setuptools \
-     python3-numpy \
-     python3-scipy \
-     python3-h5py \
-     gfortran
+     libeigen2-dev libeigen3-dev \
+     libblas-dev liblapack-dev \
+     libatlas-base-dev gfortran
 
 cd tensorflow-$V && grep -Rl 'lib64' | xargs sed -i 's/lib64/lib/g'
 
@@ -41,7 +34,6 @@ sed -i 's/ ConcatCPU/ \/\/ConcatCPU/;' tensorflow/core/kernels/list_kernels.h
  TF_NEED_VERBS=0 \
  TF_NEED_MPI=0 \
  TF_SET_ANDROID_WORKSPACE=0 \
- CC_OPT_FLAGS="-mcpu=cortex-a53 -mtune=cortex-a53 -march=armv8-a+crc -mfpu=neon-fp-armv8" \
  ./configure)
 
 # TODO:
@@ -55,15 +47,18 @@ bazel build -c opt \
       --copt=-DRASPBERRY_PI \
       --copt=-DS_IREAD=S_IRUSR \
       --copt=-DS_IWRITE=S_IWUSR \
-      --copt=-mcpu=cortex-a53 \
-      --copt=-mtune=cortex-a53 \
-      --copt=-march=armv8-a+crc \
-      --copt=-mfpu=neon-fp-armv8 \
+      --copt=-U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_1 \
+      --copt=-U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_2 \
+      --copt=-U__GCC_HAVE_SYNC_COMPARE_AND_SWAP_8 \
+      --copt=-march=armv7-a \
+      --copt=-mfpu=neon-vfpv4 \
+      --copt=-mfloat-abi=hard \
+      --copt=-std=c++11 \
       --copt=-funsafe-math-optimizations \
       --copt=-ftree-vectorize \
       --copt=-fomit-frame-pointer \
       --verbose_failures \
-      --local_resources 2048,0.8,1.0 \
+      --local_resources 1536,0.8,1.0 \
       --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" \
       //tensorflow/tools/pip_package:build_pip_package
 
@@ -76,24 +71,6 @@ D=/tmp/tensorflow_pkg/
 V=1.9.0rc1
 F=tensorflow-${V}-cp35-cp35m-linux_armv7l.whl
 mv $D$F release
-
-sudo apt-get install \
-     python3-setuptools \
-     python3-wheel \
-     python3-six \
-     python3-termcolor 
-
-# latest version is required.
-sudo pip3 install numpy --upgrade
-
-sudo pip3 install \
-     grpcio \
-     ptorobuf \
-     gast \
-     astor \
-     absl-py \
-     markdown \
-     tensorboard
 
 sudo pip3 install release/$F
 
