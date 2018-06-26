@@ -19,7 +19,7 @@ def mp3play(filename):
     status = subprocess.call("mpg321 -q " + d + filename, shell=True)
 
 def call_jtalk(m):
-    status = subprocess.call("./03_test_sound.sh" + " " + m, shell=True)
+    status = subprocess.call("scripts/jtalk.sh" + " " + m, shell=True)
 
 def pickup_news(con, uri_path):
     # topics = []
@@ -74,14 +74,14 @@ def jtalk(msg):
         {"msg":"ピンポン", "snd":"correct1.mp3"},
         {"msg":"印刷", "snd":"printer-print1.mp3", "say":"印刷します。"},
         {"msg":"プリント", "snd":"printer-print1.mp3", "say":"印刷します。"},
-        {"msg":"時間", "cmd":"./04_say_now.sh"},
-        {"msg":"何時", "cmd":"./04_say_now.sh"},
-        {"msg":"なんじ", "cmd":"./04_say_now.sh"},
-        {"msg":"汝", "cmd":"./04_say_now.sh"},
-        {"msg":"何日", "cmd":"./04_say_date.sh"},
-        {"msg":"何曜日", "cmd":"./04_say_date.sh"},
-        {"msg":"日付", "cmd":"./04_say_date.sh"},
-        {"msg":"曜日", "cmd":"./04_say_date.sh"},
+        {"msg":"時間", "cmd":"scripts/say_now.sh"},
+        {"msg":"何時", "cmd":"scripts/say_now.sh"},
+        {"msg":"なんじ", "cmd":"scripts/say_now.sh"},
+        {"msg":"汝", "cmd":"scripts/say_now.sh"},
+        {"msg":"何日", "cmd":"scripts/say_date.sh"},
+        {"msg":"何曜日", "cmd":"scripts/say_date.sh"},
+        {"msg":"日付", "cmd":"scripts/say_date.sh"},
+        {"msg":"曜日", "cmd":"scripts/say_date.sh"},
         {"msg":"問題", "snd":"question1.mp3"},
         {"msg":"運命", "snd":"fate2.mp3"},
         {"msg":"残念", "snd":"fate1.mp3"},
@@ -90,7 +90,6 @@ def jtalk(msg):
         {"msg":"ヘルプ", "snd":"morsecode-sos1.mp3"},
         {"msg":"おはよう", "say":"おはようございます。"},
         {"msg":"こんにちは", "say":"こんにちは"},
-        {"msg":"今日", "say":"こんにちは"},
         {"msg":"再起動", "say":"再起動します。", "cmd":"./cmds/reboot.sh"},
         {"msg":"リブート", "say":"再起動します。", "cmd":"./cmds/reboot.sh"},
         {"msg":"シャットダウン", "say":"シャットダウします。", "cmd":"./cmds/shutdown.sh"},

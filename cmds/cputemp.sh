@@ -2,4 +2,4 @@
 
 x=`vcgencmd measure_temp | sed -e "s/temp=//; s/'C//;"`
 
-./03_test_sound.sh "現在のCPU温度は$x度です。"
+scripts/jtalk.sh "現在のCPU温度は${x}度です。"

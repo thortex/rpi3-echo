@@ -1,7 +1,3 @@
-#-d /dev/shm/julius/bccwj.60k.bingram
-#-v /dev/shm/julius/bccwj.60k.htkdic
-#-h /dev/shm/julius/jnas-tri-3k16-gid.binhmm
-#-hlist /dev/shm/julius/logicalTri-3k16-gid.bin
 -v julius-kits/dictation-kit-v4.4/model/lang_m/bccwj.60k.htkdic
 -d julius-kits/dictation-kit-v4.4/model/lang_m/bccwj.60k.bingram
 -h julius-kits/dictation-kit-v4.4/model/phone_m/jnas-tri-3k16-gid.binhmm

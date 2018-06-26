@@ -27,11 +27,11 @@ sed -i 's/ ConcatCPU/ \/\/ConcatCPU/;' tensorflow/core/kernels/list_kernels.h
 (PYTHON_BIN_PATH=/usr/bin/python3 \
  PYTHON_LIB_PATH=/usr/local/lib/python3.5/dist-packages \
  TF_NEED_JEMALLOC=1 \
- TF_NEED_GCP=1 \
+ TF_NEED_GCP=0 \
  TF_NEED_CUDA=0 \
- TF_NEED_S3=1 \
- TF_NEED_HDFS=1 \
- TF_NEED_KAFKA=1 \
+ TF_NEED_S3=0 \
+ TF_NEED_HDFS=0 \
+ TF_NEED_KAFKA=0 \
  TF_NEED_OPENCL_SYCL=0 \
  TF_NEED_OPENCL=0 \
  TF_CUDA_CLANG=0 \

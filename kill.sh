@@ -13,7 +13,7 @@ kill_p()
 }
 
 kill_p run.sh;
-kill_p 07_echo.py;
-kill_p 06_test_julius.jconf;
+kill_p rpi_echo.py;
+kill_p julius.jconf;
 
 
