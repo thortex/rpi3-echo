@@ -1,28 +1,31 @@
 #!/bin/bash -x
-# refer to https://karaage.hatenadiary.jp/entry/2017/08/09/073000
-# refer to http://uepon.hatenadiary.com/entry/2018/02/12/113432
-
 V=1.8.0
 
+# Retrieve the specified version of tensorflow.
 wget -c https://github.com/tensorflow/tensorflow/archive/v${V}.tar.gz
-#TODO tar xzf v${V}.tar.gz
+tar xzf v${V}.tar.gz
 
+# install pre-required packages.
 sudo apt-get install \
      libeigen2-dev libeigen3-dev \
      libblas-dev liblapack-dev \
      libatlas-base-dev gfortran
 
+# substitute lib for lib64.
 cd tensorflow-$V && grep -Rl 'lib64' | xargs sed -i 's/lib64/lib/g'
 
-# TODO: as-a-work-around.
+# TODO: as-a-work-around for newer bazel/tensorflow.
 sed -i 's/ ConcatCPU/ \/\/ConcatCPU/;' tensorflow/core/kernels/list_kernels.h
 
+# A link error occurrs, if your tensorflow version is
+# greater than or equal to 1.8.0.
 f=third_party/png.BUILD
 x=`grep PNG_ARM_NEON_OPT $f`
 if [ "x$x" = "x" ] ; then
     sed -i 's/visibility /copts = ["-DPNG_ARM_NEON_OPT=0"],\n    \nvisibility /;' $f
 fi
 
+# configure
 (PYTHON_BIN_PATH=/usr/bin/python3 \
  PYTHON_LIB_PATH=/usr/local/lib/python3.5/dist-packages \
  TF_NEED_JEMALLOC=1 \
@@ -42,9 +45,7 @@ fi
  TF_SET_ANDROID_WORKSPACE=0 \
  ./configure)
 
-# refer to https://github.com/tensorflow/tensorflow/issues/17790
-# https://www.fabshop.jp/%E3%80%90step-27%E3%80%91swap%E9%A0%98%E5%9F%9F%E3%82%92%E5%88%A5%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%81%AB%E7%A7%BB%E5%8B%95%E3%81%97%E3%81%A6ssd%E6%9C%80%E9%81%A9%E5%8C%96/
-# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/ci_build/pi/build_raspberry_pi.sh
+# build.
 bazel build -c opt \
       --config=monolithic \
       --copt=-DRASPBERRY_PI \
@@ -68,17 +69,16 @@ bazel build -c opt \
       //tensorflow/tools/benchmark:benchmark_model \
       //tensorflow/tools/pip_package:build_pip_package
 
-# https://github.com/samjabrahams/tensorflow-on-raspberry-pi/blob/master/GUIDE.md
-
+# build pip pakage.
 bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
 
+# move file to release
 cd ..
 D=/tmp/tensorflow_pkg/
 F=tensorflow-${V}-cp35-cp35m-linux_armv7l.whl
 mv $D$F release
 
-#TODO: 
-#sudo pip3 install release/$F
+sudo pip3 install release/$F
 
-# Swapoff
+# Swapoff, if needed.
 # https://github.com/samjabrahams/tensorflow-on-raspberry-pi/blob/master/GUIDE.md
