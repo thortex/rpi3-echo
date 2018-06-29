@@ -17,6 +17,12 @@ cd tensorflow-$V && grep -Rl 'lib64' | xargs sed -i 's/lib64/lib/g'
 # TODO: as-a-work-around.
 sed -i 's/ ConcatCPU/ \/\/ConcatCPU/;' tensorflow/core/kernels/list_kernels.h
 
+f=third_party/png.BUILD
+x=`grep PNG_ARM_NEON_OPT $f`
+if [ "x$x" = "x" ] ; then
+    sed -i 's/visibility /copts = ["-DPNG_ARM_NEON_OPT=0"],\n    \nvisibility /;' $f
+fi
+
 (PYTHON_BIN_PATH=/usr/bin/python3 \
  PYTHON_LIB_PATH=/usr/local/lib/python3.5/dist-packages \
  TF_NEED_JEMALLOC=1 \
