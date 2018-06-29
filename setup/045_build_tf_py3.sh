@@ -72,13 +72,18 @@ bazel build -c opt \
 # build pip pakage.
 bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
 
+R=release
+cp bazel-bin/tensorflow/tools/benchmark/benchmark_model ../$R
+cp bazel-bin/tensorflow/libtensorflow.so ../$R
+cp bazel-bin/tensorflow/libtensorflow_framework.so ../$R
+
 # move file to release
 cd ..
 D=/tmp/tensorflow_pkg/
 F=tensorflow-${V}-cp35-cp35m-linux_armv7l.whl
-mv $D$F release
+mv $D$F $R
 
-sudo pip3 install release/$F
+sudo pip3 install $R/$F
 
 # Swapoff, if needed.
 # https://github.com/samjabrahams/tensorflow-on-raspberry-pi/blob/master/GUIDE.md

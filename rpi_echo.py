@@ -122,7 +122,10 @@ def read_news(msg, cam, model, ja_labels):
         pass
 
 def save_captured_image(img_path, cam):
-    remove(img_path)
+    try:
+        remove(img_path)
+    except:
+        pass
     ret, frame = cam.read()
     imwrite(img_path, frame)
     
