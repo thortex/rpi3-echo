@@ -7,7 +7,10 @@ from cv2 import CAP_PROP_FRAME_WIDTH, \
     VideoCapture, \
     imwrite
 import json
-import httplib
+try:
+    import http.client as httplib
+except ImportError:
+    import httplib
 import numpy as np
 import random
 from os import remove
@@ -20,17 +23,21 @@ import time
 known_news = []
 news_topics = []
 
+st = time.time()
 print("Importing keras...")
-from keras.applications.mobilenetv2 import MobileNetV2
-from keras.applications.mobilenetv2 import preprocess_input
-from keras.applications.mobilenetv2 import decode_predictions
+from keras.applications.mobilenetv2 import MobileNetV2, \
+    preprocess_input, \
+    decode_predictions
 from keras.preprocessing import image
-print("Imported.")
+print("Imported keras in %.1f seconds." % (time.time() - st))
 
 def load_mobilenet(shape):
+    s = time.time()
     print("Loading model...")
     model = MobileNetV2(input_shape=shape, weights='imagenet')
-    print("Created MobileNet V2 model.")
+    e = time.time()
+    d = e -s
+    print("Created MobileNet V2 model in %.1f seconds." % d)
     return model
 
 def load_japanese_labels(filename):
@@ -280,9 +287,14 @@ def connect_julius():
 
 def receive_voice(sock, cam):
     data = ""
-    while(string.find(data, "\n.") == -1):
-        data = data + sock.recv(1024)
-        ret, frame = cam.read()
+    if sys.version_info >= (3, 0):
+        while(data.find("\n.") == -1):
+            data = data + sock.recv(1024).decode('utf-8')
+            ret, frame = cam.read()
+    else:
+        while(string.find(data, "\n.") == -1):
+            data = data + sock.recv(1024)
+            ret, frame = cam.read()
         
     strTemp = ""
     for line in data.split('\n'):
