@@ -170,10 +170,11 @@ HTS voice tohoku-f01 をインストールします。
 - 音声認識ソフト Julius をインストールします。
 - ビルド済みバイナリパッケージもリリースしています。
   - https://github.com/thortex/rpi3-echo/releases
-- リリースページから julius_?.?.?-1_armhf.deb をダウンロードし、依存ライブラリと共にインストールします。
+- 以下のスクリプトを実行すると、julius_?.?.?-1_armhf.deb をダウンロードし、依存ライブラリと共にインストールします。
 ```
-./release/install_requires_related2julius.sh
-sudo dpkg -i julius_?.?.?-1_armhf.deb
+cd release
+./install_requires_related2julius.sh
+./install_julius.sh
 ```
 
 - 動作に必要な grammer-kit をダウンロードします。
@@ -197,10 +198,11 @@ sudo dpkg -i julius_?.?.?-1_armhf.deb
 - 画像認識ソフト OpenCV をインストールします。
 - ビルド済みバイナリパッケージもリリースしています。
   - https://github.com/thortex/rpi3-echo/releases
-- リリースページから opencv_?.?.?-YYYYMMDD-1_armhf.deb をダウンロードし、依存ライブラリと共にインストールします。
+- 以下のスクリプトを実行すると、opencv_?.?.?-YYYYMMDD-1_armhf.deb をダウンロードし、依存ライブラリと共にインストールします。
 ```
-./release/install_requires_related2opencv.sh
-sudo dpkg -i opencv_?.?.?-????????-1_armhf.deb
+cd release
+./install_requires_related2opencv.sh
+install_opencv.sh
 ```
 
 どうしても自分でビルドしたい人は、以下の手順を実行します。
@@ -220,15 +222,18 @@ sudo dpkg -i opencv_?.?.?-????????-1_armhf.deb
 - 以下で TensorFlow on ARM 版をインストールできます。
 ```
 ./setup/034_install_deps.sh
+./release/install_requires_related2tensorflow.sh
 ./setup/035_install_tensorflow.sh
 ```
 
 - TensorFlow on ARM 版ではなく、当方がビルドしたバイナリもあります。
   - https://github.com/thortex/rpi3-echo/releases
-- リリースページから tensorflow-?.?.?-cp35-cp35m-linux-armv7l.whl をダウンロードし、依存ライブラリと共にインストールします。
+- 以下のスクリプトを実行することで、リリースページから tensorflow-?.?.?-cp35-cp35m-linux-armv7l.whl をダウンロードし、依存ライブラリと共にインストールします。
 ```
 ./setup/034_install_deps.sh
-sudo dpkg -i tensorflow-?.?.?-cp35-cp35m-linux-armv7l.whl
+cd release
+./install_requires_related2tensorflow.sh
+./install_tensorflow.sh
 ```
 
 どうしても自分でビルドしたい人は、まずラズパイのスワップ領域拡張を行います。
@@ -241,6 +246,7 @@ TensorFlow 1.8.0 以降のビルドには少なくともラズパイの 1 GB メ
 
 - gcc-4.8 でビルドツール Bazel をビルドします。
 - gcc-4.8 で TensorFlow をビルドします。
+- 当方は Raspberry Pi 3 上で 16 時間かかりました。
 ```
 ./setup/039_gcc-4.8.sh
 ./setup/040_build_bazel.sh
@@ -255,6 +261,16 @@ TensorFlow 1.8.0 以降のビルドには少なくともラズパイの 1 GB メ
 ./setup/050_install_keras.sh
 ```
 
+### 効果音素材のダウンロード
+
+フリーの効果音素材をダウンロードします。
+```
+cd mp3/anime
+./down.sh && ./down2.sh
+cd ../..
+```
+
+
 ## 動作確認
 
 run.sh を実行すると Julius と rpi_echo.py スクリプトが動作します。
@@ -263,6 +279,31 @@ run.sh を実行すると Julius と rpi_echo.py スクリプトが動作しま�
 ```
 
 - InceptionV3 などの学習済みモデルも使用できますが、ここでは軽量な MobileNetV2 を使っています。
+- 初回実行じは学習済みモデルファイルをウェブからダウンロードするため、時間がかかります。
+- モデルファイルのロードにも時間がかかります。
+- TensorFlow/Keras の import にも時間がかかります。
+- モデルファイルはダウンロードされると ~/.keras/models に配置されます。
+- 学習済みモデルの使用は https://github.com/JonathanCMitchell/mobilenet_v2_keras/releases から直接 mobilenet_v2_weights_tf_dim_ordering_tf_kernels_1.0_224.h5 をダウンロードし、~/.keras/models に配置することでも可能です。
+
+### 録音デバイスの指定
+
+- 複数のマイクが接続されている場合、録音デバイスを Julius に指定した方が良いです。
+- デフォルト設定では C-Media Audio 互換 USB デバイスを録音デバイスに指定しています。
+- もし、異なる場合は run_julius.sh の D="C-Media" を適切なデバイスのデバイス名に変更します。
+- ALSA で認識している録音デバイスの一覧は以下のコマンドで確認できます。
+```
+./scripts/show_mic_card_id.sh 
+```
+
+### 再生デバイスの指定
+
+- 再生デバイスのデフォルト出力先は 3.5mm pin-jack analog audio にしています。
+- 変更する場合は scripts/jtalk.sh の grep bcm2835 という箇所を別のカード名称に変更します。
+- ALSA で認識している再生デバイスの一覧は以下のコマンドで確認できます。
+```
+(LANG=C alay -l)
+```
+
 
 
 ## 参考資料
