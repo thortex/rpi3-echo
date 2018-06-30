@@ -1,6 +1,6 @@
 # Raspberry Pi 3 Echo 
 
-Julius, Open JTalk, OpenCV, TensorFlow/Keras を用いた AI スピーカ on Raspberry Pi 3
+Julius, Open JTalk, OpenCV, TensorFlow/Keras を用いたスマートスピーカ on Raspberry Pi 3(B+)
 
 ## 目次
 - [概要](#概要)
@@ -16,7 +16,7 @@ Julius, Open JTalk, OpenCV, TensorFlow/Keras を用いた AI スピーカ on Ras
   - [音響モデル](#音響モデル)
   - [パッケージ管理](#パッケージ管理)
   - [音声認識ソフト](#音声認識ソフト)
-  - [画像認識ソフト](#画像認識ソフト)
+  - [画像処理ソフト](#画像処理ソフト)
   - [機械学習ソフト](#機械学習ソフト)
   - [機械学習フレームワーク](#機械学習フレームワーク)
 - [動作確認](#動作確認)
@@ -24,14 +24,14 @@ Julius, Open JTalk, OpenCV, TensorFlow/Keras を用いた AI スピーカ on Ras
 
 ## 概要
 
--ラズパイ3を用いてAIスピーカのようなものを作成します。
+- ラズパイ 3 を用いてスマートスピーカのようなものを作成します。
 - 「これはなんですか？」と聞くと「これはリンゴです」と答えてくれる機能を持ちます。
 - 「今日のニュースは？」と聞くとニュースをピックアップします。
 - 「今日は何曜日？」と聞くと日付を教えてくれます。
 - 「何時？」と聞くと時間を教えてくれます。
 - 「再起動」「リブート」と命令すると再起動します。
 - 「シャットダウン」「さようなら」と命令・発話するとシャットダウンします。
-- 「あつくない？」と聞くと現在のCPU温度を答えます。
+- 「あつくない？」と聞くと現在の CPU 温度を答えます。
 - voice-cmd.txt にある通り、決められた言葉に対する効果音を鳴らし、場を盛り上げます。
 
 ## 動作環境
@@ -57,8 +57,11 @@ Julius, Open JTalk, OpenCV, TensorFlow/Keras を用いた AI スピーカ on Ras
 
 ## 環境構築
 
-- Raspberry Pi 3 上で AI スピーカを実現するために、Julius, Open JTalk, OpenCV, TensorFlow/Keras を用います。
+- Raspberry Pi 3 上でスマートスピーカを実現するために、Julius, Open JTalk, OpenCV, TensorFlow/Keras を用います。
 - 基本的にオフライン環境か細い回線を前提としているため、Google Assistant SDK 等は使いません。
+- ニュースを読み上げる機能以外は、全てオフラインで実行可能であるため、ネットワークから孤立したスタンドアロン環境で動作します。
+- USB モバイルバッテリーと組み合わせれば、ポータブル/ウェアラブルなスマートスピーカーになります。
+- 個人情報が収集されることもありませんし、勝手に商品が購入されることもありません。
 
 実行時に必要なソフトウェアは以下です。
 
@@ -193,9 +196,9 @@ cd release
 ./setup/021_build_julius.sh
 ```
 
-### 画像認識ソフト
+### 画像処理ソフト
 
-- 画像認識ソフト OpenCV をインストールします。
+- 画像処理ソフト OpenCV をインストールします。
 - ビルド済みバイナリパッケージもリリースしています。
   - https://github.com/thortex/rpi3-echo/releases
 - 以下のスクリプトを実行すると、opencv_?.?.?-YYYYMMDD-1_armhf.deb をダウンロードし、依存ライブラリと共にインストールします。
@@ -247,10 +250,12 @@ TensorFlow 1.8.0 以降のビルドには少なくともラズパイの 1 GB メ
 - gcc-4.8 でビルドツール Bazel をビルドします。
 - gcc-4.8 で TensorFlow をビルドします。
 - 当方は Raspberry Pi 3 上で 16 時間かかりました。
+- Python 3 用と Python 2 用の両方の wheel パッケージをビルドする場合、32 時間程度かかりました。
 ```
 ./setup/039_gcc-4.8.sh
 ./setup/040_build_bazel.sh
 ./setup/045_build_tf_py3.sh
+./setup/046_build_tf_py2.sh
 ```
 
 ### 機械学習フレームワーク
@@ -304,6 +309,22 @@ run.sh を実行すると Julius と rpi_echo.py スクリプトが動作しま�
 (LANG=C alay -l)
 ```
 
+### Juliusの設定
+
+処理速度を向上させるために、Julius は以下のデフォルト設定にしています。
+```
+-n 2
+-output 1
+-rejectshort 200
+-48
+-realtime
+```
+
+- -n や -output 文仮説数の探索数を設定します。
+- -n は 1 に設定しても動作します。
+- rejectshort により 200 msec 以下の発話は棄却されます。
+- 録音デバイスの種類によっては -48 オプションは不要です。
+- realtime オプションを付けると音声入力と同時に音声認識処理が並列処理されます。
 
 
 ## 参考資料
