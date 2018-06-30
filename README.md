@@ -38,7 +38,7 @@ Julius, Open JTalk, OpenCV, TensorFlow/Keras を用いた AI スピーカ on Ras
 
 | 項目                  | 内容           |
 |:----------------------|:---------------|
-| Raspberry Pi のモデル | 3B+ or 3B      |
+| Raspberry Pi のモデル | 3 or may 3B+   |
 | CPU                   | Cortex-A53     |
 | メインメモリ          | DDR2 1 GB      |
 | 冷却                  | 強制冷却を推奨 |
