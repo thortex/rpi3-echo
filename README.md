@@ -21,6 +21,8 @@ Julius, Open JTalk, OpenCV, TensorFlow/Keras を用いたスマートスピー�
   - [機械学習フレームワーク](#機械学習フレームワーク)
 - [動作確認](#動作確認)
 - [参考資料](#参考資料)
+- [寄贈のお願い](#寄贈のお願い)
+
 
 ## 概要
 
@@ -284,7 +286,7 @@ run.sh を実行すると Julius と rpi_echo.py スクリプトが動作しま�
 ```
 
 - InceptionV3 などの学習済みモデルも使用できますが、ここでは軽量な MobileNetV2 を使っています。
-- 初回実行じは学習済みモデルファイルをウェブからダウンロードするため、時間がかかります。
+- 初回実行時は学習済みモデルファイルをウェブからダウンロードするため、時間がかかります。
 - モデルファイルのロードにも時間がかかります。
 - TensorFlow/Keras の import にも時間がかかります。
 - モデルファイルはダウンロードされると ~/.keras/models に配置されます。
@@ -365,3 +367,9 @@ PonDad 様の ImageNet Class Index 日本語版を改変いたしました。
 ### 音声認識
 Julius とのインタフェースは @fishkiller 様の XML なし版をベースにいたしました。
 - https://qiita.com/fishkiller/items/c6c5c4dcd9bb8184e484
+
+## 寄贈のお願い
+
+- 開発機材をご提供いただける方を随時募集中です…
+- Raspberry Pi 3B+, Raspberry Pi Zero (W(H)), Webcam, マイク, ヘッドセット等々…
+- http://amzn.asia/00yBsf8
