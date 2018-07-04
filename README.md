@@ -77,6 +77,7 @@ Julius, Open JTalk, OpenCV, TensorFlow/Keras を用いたスマートスピー�
 | TensorFlow         | 物体認知 | 1.8.0                 | Apache 2.0   |
 | Keras              | 物体認知 | 2.2.0                 | MIT          |
 | 効果音素材         | 効果音   | -                     | 商用可       |
+| tf-pose-estimation | 骨格推定 | 0.1.0 (branch master) | Apache 2.0   |
 
 
 ビルドする場合に必要なソフトウェアは以下です。
