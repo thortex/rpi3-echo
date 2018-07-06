@@ -110,6 +110,7 @@ function install_tessdata() {
     # Italian, Tamil, Swahili, Persian, Malay, Hindi, Japanese, German, 
     # Portoguese, Russian, Simplified Chinese, Arabic, Spanish, English
     echo -e "install:" > Makefile
+    echo -e "\tmkdir $D" >> Makefile
     for l in ita tam swa fas msa hin jpn jpn_vert deu por rus chi_sim \
 		 chi_sim_vert ara spa fra eng osd; do
 	echo -e "\tinstall ${l}.traineddata $D" >> Makefile
@@ -123,6 +124,7 @@ function install_tessdata() {
     cd script
     D=/usr/local/share/tessdata/script
     echo -e "install:" > Makefile
+    echo -e "\tmkdir $D" >> Makefile
     for l in Tamil Japanese Japanese_vert Arabic; do
 	echo -e "\tinstall ${l}.traineddata $D" >> Makefile
     done

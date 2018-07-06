@@ -1,6 +1,6 @@
 #!/bin/bash -x
-YMD=20180623
-V=3.4.1
+YMD=20180706
+V=3.4.2
 D=opencv-${V}/build/
 F=opencv_${YMD}-1_armhf.deb
 P=${F/opencv_/opencv_$V-}

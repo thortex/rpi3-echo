@@ -1,6 +1,11 @@
 #!/bin/sh -x
-# 
-# https://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/
+
+V=3.4.2
+TESS_INC_DIR=/usr/local/include/tesseract
+TESS_LIBRARY=/usr/local/lib/libtesseract.so.4
+
+# numpy は latest 版を入れる
+sudo pip3 install numpy
 
 sudo apt-get install \
      build-essential \
@@ -35,7 +40,6 @@ sudo apt-get install \
      python-pip \
      python3-pip \
      python-numpy \
-     python3-numpy \
      python-dev \
      python3-dev \
      libeigen2-dev \
@@ -61,17 +65,9 @@ sudo apt-get install \
      libtbb-dev \
      libdc1394-22-dev \
      libunicap2-dev \
-     ffmpeg \
-     libtesseract-dev \
-     tesseract-ocr \
-     tesseract-ocr-eng \
-     tesseract-ocr-jpn \
-     libleptonica-dev
+     ffmpeg 
 
-# https://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/
-# https://qiita.com/PonDad/items/c5419c164b4f2efee368
 
-V=3.4.1
 wget -c -O opencv.zip https://github.com/opencv/opencv/archive/${V}.zip
 wget -c -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/${V}.zip
 unzip opencv.zip
@@ -209,8 +205,8 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D BUILD_opencv_cudastereo=OFF \
       -D BUILD_opencv_cudawarping=OFF \
       -D BUILD_opencv_cudev=OFF \
-      -D Tesseract_INCLUDE_DIR=/usr/include/tesseract \
-      -D Tesseract_LIBRARY=/usr/lib/arm-linux-gnueabihf/libtesseract.so.3 \
+      -D Tesseract_INCLUDE_DIR=$TESS_INC_DIR \
+      -D Tesseract_LIBRARY=$TESS_LIBRARY \
       .. && make && sudo checkinstall
 
 

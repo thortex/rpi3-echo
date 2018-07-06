@@ -1,6 +1,8 @@
 #!/bin/sh -x
 sudo apt-get install \
+leptonica \
 libaec0 \
+libatlas3-base \
 libatomic1 \
 libavcodec57 \
 libavformat57 \
@@ -55,7 +57,6 @@ libk5crypto3 \
 libkeyutils1 \
 libkrb5-3 \
 libkrb5support0 \
-liblept5 \
 libltdl7 \
 liblzma5 \
 libmp3lame0 \
@@ -90,7 +91,6 @@ libswscale4 \
 libsz2 \
 libtasn1-6 \
 libtbb2 \
-libtesseract3 \
 libtheora0 \
 libtiff5 \
 libtwolame0 \
@@ -125,5 +125,6 @@ libxrender1 \
 libxvidcore4 \
 libzvbi0 \
 raspi-copies-and-fills \
+tesseract-ocr \
 zlib1g \
  
